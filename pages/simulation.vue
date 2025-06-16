@@ -10,7 +10,7 @@
           
           <div class="flex gap-3 items-center">
             <!-- Simulation Speed Slider -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2" v-if="config.value && config.value.simulationSpeed">
               <span class="text-sm text-gray-600 whitespace-nowrap">Speed:</span>
               <input
                   v-model.number="config.value.simulationSpeed"
@@ -19,9 +19,8 @@
                   max="2000"
                   step="10"
                   class="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  v-if="config.value"
               />
-              <span class="text-sm text-gray-600 min-w-0">{{ config.value?.simulationSpeed || 100 }}ms</span>
+              <span class="text-sm text-gray-600 min-w-0">{{ config.value.simulationSpeed }}ms</span>
             </div>
             
             <UButton
