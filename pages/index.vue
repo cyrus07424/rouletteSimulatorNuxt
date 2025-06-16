@@ -170,6 +170,7 @@ import { MartingaleStrategy } from '~/composables/strategies/martingaleStrategy'
 import { FixedBetStrategy } from '~/composables/strategies/fixedBetStrategy';
 import { CocomoStrategy } from '~/composables/strategies/cocomoStrategy';
 import { SpotHelper } from '~/utils/spotHelper';
+import { drawBalanceChart } from '~/utils/chartHelper';
 
 const selectedStrategy = ref('martingale');
 const rouletteType = ref(RouletteType.EUROPEAN_STYLE);
@@ -179,6 +180,7 @@ const roundsToRun = ref(100);
 const simulator = ref<RouletteSimulator>();
 const strategy = ref<Strategy>();
 const recentResults = ref<SimulationResult[]>([]);
+const chartCanvas = ref<HTMLCanvasElement>();
 const stats = ref<StrategyStats>({
   currentBalance: 0,
   maximumBalance: 0,
@@ -238,6 +240,15 @@ const initializeSimulation = () => {
 const updateStats = () => {
   if (strategy.value) {
     stats.value = strategy.value.getStats();
+    updateChart();
+  }
+};
+
+const updateChart = () => {
+  if (chartCanvas.value && stats.value.balanceHistory.length > 1) {
+    nextTick(() => {
+      drawBalanceChart(chartCanvas.value!, stats.value.balanceHistory);
+    });
   }
 };
 
@@ -299,5 +310,14 @@ watch([selectedStrategy, rouletteType, initialBalance], () => {
 // Initialize on mount
 onMounted(() => {
   initializeSimulation();
+});
+
+// Update chart when window resizes
+onMounted(() => {
+  const handleResize = () => updateChart();
+  window.addEventListener('resize', handleResize);
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize);
+  });
 });
 </script>
