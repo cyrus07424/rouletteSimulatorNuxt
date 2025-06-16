@@ -41,7 +41,7 @@
         </div>
 
         <!-- Simulation Info -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-7 gap-4 mb-6">
           <div class="bg-blue-50 p-3 rounded-lg">
             <div class="text-lg font-bold text-blue-600">{{ totalRounds }}</div>
             <div class="text-sm text-blue-500">Total Rounds</div>
@@ -60,6 +60,22 @@
           <div class="bg-green-50 p-3 rounded-lg">
             <div class="text-lg font-bold text-green-600">{{ strategyCount }}</div>
             <div class="text-sm text-green-500">Active Strategies</div>
+          </div>
+          
+          <!-- Color Percentages from Recent 100 Loops -->
+          <div class="bg-red-50 p-3 rounded-lg">
+            <div class="text-lg font-bold text-red-600">{{ colorPercentages.red }}%</div>
+            <div class="text-sm text-red-500">Red (Recent 100)</div>
+          </div>
+          
+          <div class="bg-slate-50 p-3 rounded-lg">
+            <div class="text-lg font-bold text-slate-800">{{ colorPercentages.black }}%</div>
+            <div class="text-sm text-slate-600">Black (Recent 100)</div>
+          </div>
+          
+          <div class="bg-emerald-50 p-3 rounded-lg">
+            <div class="text-lg font-bold text-emerald-600">{{ colorPercentages.green }}%</div>
+            <div class="text-sm text-emerald-500">Green (Recent 100)</div>
           </div>
         </div>
 
@@ -214,6 +230,35 @@ const lastSpotDisplay = computed(() => {
 });
 
 const strategyCount = computed(() => Object.keys(strategyResults.value).length);
+
+// Color percentage calculations based on recent 100 spots
+const colorPercentages = computed(() => {
+  const recent100 = recentSpots.value.slice(-100); // Get last 100 spots
+  if (recent100.length === 0) {
+    return { red: 0, black: 0, green: 0 };
+  }
+  
+  let redCount = 0;
+  let blackCount = 0;
+  let greenCount = 0;
+  
+  recent100.forEach(spot => {
+    if (SpotHelper.isRed(spot)) {
+      redCount++;
+    } else if (SpotHelper.isBlack(spot)) {
+      blackCount++;
+    } else {
+      greenCount++;
+    }
+  });
+  
+  const total = recent100.length;
+  return {
+    red: Math.round((redCount / total) * 100),
+    black: Math.round((blackCount / total) * 100),
+    green: Math.round((greenCount / total) * 100)
+  };
+});
 
 const availableSpots = computed(() => {
   const spots: Spot[] = [];

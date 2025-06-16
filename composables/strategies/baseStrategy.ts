@@ -79,8 +79,8 @@ export abstract class BaseStrategy implements Strategy {
         // Update balance history if currently live
         if (this.lastLive) {
             this.balanceHistory.push(this.currentBalance);
-            // Keep only recent history
-            if (this.balanceHistory.length > 1000) {
+            // Keep only recent 100 entries for chart display
+            if (this.balanceHistory.length > 100) {
                 this.balanceHistory.shift();
             }
         }
