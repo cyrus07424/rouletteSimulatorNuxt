@@ -15,8 +15,8 @@ export class CocomoStrategy extends BaseStrategy {
         return 'Cocomo Strategy';
     }
 
-    constructor(initialBalance: number, baseAmount: number = 1) {
-        super(initialBalance);
+    constructor(initialBalance: number, baseAmount: number = 1, maxBetAmount: number = Number.MAX_SAFE_INTEGER) {
+        super(initialBalance, maxBetAmount);
         this.baseAmount = baseAmount;
         this.currentAmount = baseAmount;
     }
@@ -24,25 +24,28 @@ export class CocomoStrategy extends BaseStrategy {
     protected getNextBetListImpl(context: RouletteContext): Bet[] {
         const bets: Bet[] = [];
 
-        // Check if we have enough balance for the current bet amount
-        if (this.currentBalance >= this.currentAmount) {
+        // Clamp bet amount to max allowed
+        const betAmount = Math.min(this.currentAmount, this.maxBetAmount);
+
+        // Check if we have enough balance for the bet amount
+        if (this.currentBalance >= betAmount && betAmount > 0) {
             const lastSpot = context.getLastSpot();
 
             if (!lastSpot) {
                 // First round - bet on red
-                bets.push(BetHelper.createRedBet(this.currentAmount));
+                bets.push(BetHelper.createRedBet(betAmount));
             } else {
                 // Bet on the opposite color of the last result
 
                 if (SpotHelper.isRed(lastSpot)) {
                     // Last was red, bet on black
-                    bets.push(BetHelper.createBlackBet(this.currentAmount));
+                    bets.push(BetHelper.createBlackBet(betAmount));
                 } else if (SpotHelper.isBlack(lastSpot)) {
                     // Last was black, bet on red
-                    bets.push(BetHelper.createRedBet(this.currentAmount));
+                    bets.push(BetHelper.createRedBet(betAmount));
                 } else {
                     // Last was green (0 or 00), bet on red as default
-                    bets.push(BetHelper.createRedBet(this.currentAmount));
+                    bets.push(BetHelper.createRedBet(betAmount));
                 }
             }
         }
