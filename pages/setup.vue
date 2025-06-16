@@ -120,25 +120,13 @@
 <script setup lang="ts">
 import {RouletteType, SpotGenerateType} from '~/types';
 
-interface SimulationConfig {
-  rouletteType: RouletteType;
-  spotGenerateType: SpotGenerateType;
-  initialBalance: number;
-  minBetAmount: number;
-  maxBetAmount: number;
-  simulationSpeed: number;
-  selectedStrategies: string[];
-}
+// Use the shared configuration
+const { config, setConfig } = useSimulationConfig();
 
-const config = ref<SimulationConfig>({
-  rouletteType: RouletteType.EUROPEAN_STYLE,
-  spotGenerateType: SpotGenerateType.RANDOM,
-  initialBalance: 1000,
-  minBetAmount: 1,
-  maxBetAmount: 100,
-  simulationSpeed: 100,
-  selectedStrategies: [],
-});
+// Watch for config changes and save them
+watch(config, (newConfig) => {
+  setConfig(newConfig);
+}, { deep: true });
 
 const rouletteTypeOptions = [
   {label: 'European Roulette', value: RouletteType.EUROPEAN_STYLE},
@@ -171,10 +159,6 @@ const canStartSimulation = computed(() => {
 
 const startSimulation = () => {
   if (!canStartSimulation.value) return;
-  
-  // Store configuration in session storage or composable
-  const simulationConfig = useSimulationConfig();
-  simulationConfig.setConfig(config.value);
   
   // Navigate to simulation page
   navigateTo('/simulation');
