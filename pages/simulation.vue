@@ -19,8 +19,9 @@
                   max="2000"
                   step="10"
                   class="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  v-if="config.value"
               />
-              <span class="text-sm text-gray-600 min-w-0">{{ config.value.simulationSpeed }}ms</span>
+              <span class="text-sm text-gray-600 min-w-0">{{ config.value?.simulationSpeed || 100 }}ms</span>
             </div>
             
             <UButton
@@ -48,7 +49,7 @@
           </div>
           
           <div class="bg-purple-50 p-3 rounded-lg">
-            <div class="text-lg font-bold text-purple-600">{{ config.value.simulationSpeed }}ms</div>
+            <div class="text-lg font-bold text-purple-600">{{ config.value?.simulationSpeed || 100 }}ms</div>
             <div class="text-sm text-purple-500">Round Speed</div>
           </div>
           
@@ -78,7 +79,7 @@
               
               <div class="bg-green-50 p-3 rounded">
                 <div class="text-lg font-bold" :class="balanceDifferenceClass(strategyResult.stats.currentBalance)">
-                  {{ formatCurrency(strategyResult.stats.currentBalance - config.value.initialBalance) }}
+                  {{ formatCurrency(strategyResult.stats.currentBalance - (config.value?.initialBalance || 1000)) }}
                 </div>
                 <div class="text-xs text-gray-500">Difference</div>
               </div>
@@ -442,7 +443,7 @@ onUnmounted(() => {
 });
 
 // Redirect to setup if no configuration
-if (!config.value.selectedStrategies.length) {
+if (!config.value || !config.value.selectedStrategies.length) {
   navigateTo('/setup');
 }
 </script>
