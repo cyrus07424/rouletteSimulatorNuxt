@@ -10,7 +10,8 @@ export class BetHelper {
     static getTotalPayout(bets: Bet[], spot: Spot): number {
         return bets.reduce((total, bet) => {
             if (this.doesBetWin(bet, spot)) {
-                return total + bet.amount * bet.payout;
+                // Return original bet amount plus winnings (bet.amount * bet.payout)
+                return total + bet.amount + (bet.amount * bet.payout);
             }
             return total;
         }, 0);
