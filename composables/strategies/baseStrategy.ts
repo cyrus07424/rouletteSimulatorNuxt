@@ -15,11 +15,17 @@ export abstract class BaseStrategy implements Strategy {
 
     protected lastBetList: Bet[] = [];
     protected lastLive: boolean = false;
+    protected maxBetAmount: number;
 
     abstract get name(): string;
 
-    constructor(initialBalance: number) {
+    constructor(initialBalance: number, maxBetAmount: number = Number.MAX_SAFE_INTEGER) {
         this.currentBalance = initialBalance;
+        this.maxBetAmount = maxBetAmount;
+        this.maximumBalance = initialBalance;
+        this.minimumBalance = initialBalance;
+        this.balanceHistory.push(initialBalance);
+        this.lastLive = true;
     }
 
     getNextBetList(context: RouletteContext): Bet[] {

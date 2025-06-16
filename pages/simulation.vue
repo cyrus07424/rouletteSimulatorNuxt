@@ -242,16 +242,16 @@ const initializeSimulation = () => {
     
     switch (strategyName) {
       case 'martingale':
-        strategy = new MartingaleStrategy(config.initialBalance, config.minBetAmount);
+        strategy = new MartingaleStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
         break;
       case 'fixed':
-        strategy = new FixedBetStrategy(config.initialBalance, config.minBetAmount);
+        strategy = new FixedBetStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
         break;
       case 'cocomo':
-        strategy = new CocomoStrategy(config.initialBalance, config.minBetAmount);
+        strategy = new CocomoStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
         break;
       default:
-        strategy = new FixedBetStrategy(config.initialBalance, config.minBetAmount);
+        strategy = new FixedBetStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
     }
     
     strategyResults.value[strategyName] = {

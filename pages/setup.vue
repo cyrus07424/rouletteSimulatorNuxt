@@ -74,10 +74,12 @@
             <label class="block text-sm font-medium text-gray-700 mb-4">Select Strategies</label>
             <div class="space-y-3">
               <div v-for="strategy in availableStrategies" :key="strategy.value" class="flex items-center">
-                <UCheckbox
+                <input
                     :id="strategy.value"
                     v-model="config.selectedStrategies"
                     :value="strategy.value"
+                    type="checkbox"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label :for="strategy.value" class="ml-2 text-sm text-gray-700">
                   {{ strategy.label }}

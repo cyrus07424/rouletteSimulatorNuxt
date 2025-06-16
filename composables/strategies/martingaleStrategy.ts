@@ -10,8 +10,8 @@ export class MartingaleStrategy extends BaseStrategy {
         return 'Martingale Strategy';
     }
 
-    constructor(initialBalance: number, baseAmount: number = 1) {
-        super(initialBalance);
+    constructor(initialBalance: number, baseAmount: number = 1, maxBetAmount: number = Number.MAX_SAFE_INTEGER) {
+        super(initialBalance, maxBetAmount);
         this.baseAmount = baseAmount;
         this.currentAmount = baseAmount;
     }
@@ -19,10 +19,13 @@ export class MartingaleStrategy extends BaseStrategy {
     protected getNextBetListImpl(context: RouletteContext): Bet[] {
         const bets: Bet[] = [];
 
-        // Check if we have enough balance for the current bet amount
-        if (this.currentBalance >= this.currentAmount) {
-            // Place a red bet with current amount
-            bets.push(BetHelper.createRedBet(this.currentAmount));
+        // Clamp bet amount to max allowed
+        const betAmount = Math.min(this.currentAmount, this.maxBetAmount);
+
+        // Check if we have enough balance for the bet amount
+        if (this.currentBalance >= betAmount && betAmount > 0) {
+            // Place a red bet with clamped amount
+            bets.push(BetHelper.createRedBet(betAmount));
         }
 
         return bets;
