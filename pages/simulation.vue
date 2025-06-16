@@ -8,7 +8,21 @@
             Roulette Simulation
           </h1>
           
-          <div class="flex gap-3">
+          <div class="flex gap-3 items-center">
+            <!-- Simulation Speed Slider -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 whitespace-nowrap">Speed:</span>
+              <input
+                  v-model.number="config.value.simulationSpeed"
+                  type="range"
+                  min="10"
+                  max="2000"
+                  step="10"
+                  class="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+              <span class="text-sm text-gray-600 min-w-0">{{ config.value.simulationSpeed }}ms</span>
+            </div>
+            
             <UButton
                 @click="toggleSimulation"
                 :color="isRunning ? 'orange' : 'green'"
@@ -34,7 +48,7 @@
           </div>
           
           <div class="bg-purple-50 p-3 rounded-lg">
-            <div class="text-lg font-bold text-purple-600">{{ config.simulationSpeed }}ms</div>
+            <div class="text-lg font-bold text-purple-600">{{ config.value.simulationSpeed }}ms</div>
             <div class="text-sm text-purple-500">Round Speed</div>
           </div>
           
@@ -64,7 +78,7 @@
               
               <div class="bg-green-50 p-3 rounded">
                 <div class="text-lg font-bold" :class="balanceDifferenceClass(strategyResult.stats.currentBalance)">
-                  {{ formatCurrency(strategyResult.stats.currentBalance - config.initialBalance) }}
+                  {{ formatCurrency(strategyResult.stats.currentBalance - config.value.initialBalance) }}
                 </div>
                 <div class="text-xs text-gray-500">Difference</div>
               </div>
@@ -179,7 +193,7 @@ interface StrategyResult {
 
 // Get configuration
 const simulationConfig = useSimulationConfig();
-const config = simulationConfig.getConfig();
+const config = simulationConfig.config;
 
 // Reactive state
 const isRunning = ref(true);
@@ -213,7 +227,7 @@ const availableSpots = computed(() => {
   spots.push(0 as Spot);
   
   // Add 00 for American roulette
-  if (config.rouletteType === RouletteType.AMERICAN_STYLE) {
+  if (config.value.rouletteType === RouletteType.AMERICAN_STYLE) {
     spots.push(-1 as Spot);
   }
   
@@ -229,29 +243,29 @@ const availableSpots = computed(() => {
 // Initialize simulation
 const initializeSimulation = () => {
   simulator.value = new RouletteSimulator(
-    config.rouletteType,
-    config.spotGenerateType,
-    config.initialBalance
+    config.value.rouletteType,
+    config.value.spotGenerateType,
+    config.value.initialBalance
   );
 
   strategyResults.value = {};
   
   // Initialize each selected strategy
-  config.selectedStrategies.forEach(strategyName => {
+  config.value.selectedStrategies.forEach(strategyName => {
     let strategy: Strategy;
     
     switch (strategyName) {
       case 'martingale':
-        strategy = new MartingaleStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
+        strategy = new MartingaleStrategy(config.value.initialBalance, config.value.minBetAmount, config.value.maxBetAmount);
         break;
       case 'fixed':
-        strategy = new FixedBetStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
+        strategy = new FixedBetStrategy(config.value.initialBalance, config.value.minBetAmount, config.value.maxBetAmount);
         break;
       case 'cocomo':
-        strategy = new CocomoStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
+        strategy = new CocomoStrategy(config.value.initialBalance, config.value.minBetAmount, config.value.maxBetAmount);
         break;
       default:
-        strategy = new FixedBetStrategy(config.initialBalance, config.minBetAmount, config.maxBetAmount);
+        strategy = new FixedBetStrategy(config.value.initialBalance, config.value.minBetAmount, config.value.maxBetAmount);
     }
     
     strategyResults.value[strategyName] = {
@@ -283,7 +297,7 @@ const runSimulationRound = () => {
       strategyResult.lastBetAmount = result.totalBet;
       
       // Update spot data (only once per round, not per strategy)
-      if (strategyName === config.selectedStrategies[0]) {
+      if (strategyName === config.value.selectedStrategies[0]) {
         recentSpots.value.push(result.spot);
         spotFrequency.value[result.spot] = (spotFrequency.value[result.spot] || 0) + 1;
         
@@ -304,7 +318,7 @@ const runSimulationRound = () => {
     updateCharts();
     
     // Schedule next round
-    simulationTimer.value = setTimeout(runSimulationRound, config.simulationSpeed);
+    simulationTimer.value = setTimeout(runSimulationRound, config.value.simulationSpeed);
   } else {
     // All strategies are dead, pause simulation
     isRunning.value = false;
@@ -375,7 +389,7 @@ const getHeatmapColorClass = (spot: Spot) => {
 };
 
 const balanceDifferenceClass = (currentBalance: number) => {
-  const difference = currentBalance - config.initialBalance;
+  const difference = currentBalance - config.value.initialBalance;
   if (difference > 0) return 'text-green-600';
   if (difference < 0) return 'text-red-600';
   return 'text-gray-600';
@@ -428,7 +442,7 @@ onUnmounted(() => {
 });
 
 // Redirect to setup if no configuration
-if (!config.selectedStrategies.length) {
+if (!config.value.selectedStrategies.length) {
   navigateTo('/setup');
 }
 </script>
