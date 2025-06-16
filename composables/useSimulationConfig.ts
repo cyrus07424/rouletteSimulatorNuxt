@@ -20,23 +20,24 @@ const defaultConfig: SimulationConfig = {
   selectedStrategies: ['martingale'],
 };
 
-export const useSimulationConfig = () => {
-  const config = ref<SimulationConfig>(defaultConfig);
+// Global state shared across all instances
+const globalConfig = ref<SimulationConfig>({ ...defaultConfig });
 
+export const useSimulationConfig = () => {
   const setConfig = (newConfig: SimulationConfig) => {
-    config.value = { ...newConfig };
+    globalConfig.value = { ...newConfig };
   };
 
   const getConfig = (): SimulationConfig => {
-    return { ...config.value };
+    return { ...globalConfig.value };
   };
 
   const resetConfig = () => {
-    config.value = { ...defaultConfig };
+    globalConfig.value = { ...defaultConfig };
   };
 
   return {
-    config: readonly(config),
+    config: readonly(globalConfig),
     setConfig,
     getConfig,
     resetConfig,
