@@ -288,8 +288,10 @@ const availableSpots = computed(() => {
     spots.push(i as Spot);
   }
   
-  // Add 0
-  spots.push(0 as Spot);
+  // Add 0 for European or American roulette
+  if (config.value.rouletteType === RouletteType.EUROPEAN_STYLE || config.value.rouletteType === RouletteType.AMERICAN_STYLE) {
+    spots.push(0 as Spot);
+  }
   
   // Add 00 for American roulette
   if (config.value.rouletteType === RouletteType.AMERICAN_STYLE) {
@@ -442,15 +444,31 @@ const getSpotColorClass = (spot: Spot) => {
 const getHeatmapColorClass = (spot: Spot) => {
   const frequency = spotFrequency.value[spot] || 0;
   const maxFrequency = Math.max(...Object.values(spotFrequency.value));
-  
+
   if (frequency === 0) return 'bg-white border border-gray-200';
-  
+
   const intensity = frequency / maxFrequency;
-  if (intensity > 0.8) return 'bg-red-500 text-white';
-  if (intensity > 0.6) return 'bg-red-400 text-white';
-  if (intensity > 0.4) return 'bg-red-300';
-  if (intensity > 0.2) return 'bg-red-200';
-  return 'bg-red-100';
+  const color = SpotHelper.getColor(spot);
+  if (color === 'red') {
+    if (intensity > 0.8) return 'bg-red-500 text-white';
+    if (intensity > 0.6) return 'bg-red-400 text-white';
+    if (intensity > 0.4) return 'bg-red-300';
+    if (intensity > 0.2) return 'bg-red-200';
+    return 'bg-red-100';
+  } else if (color === 'black') {
+    if (intensity > 0.8) return 'bg-gray-500 text-white';
+    if (intensity > 0.6) return 'bg-gray-400 text-white';
+    if (intensity > 0.4) return 'bg-gray-300 text-white';
+    if (intensity > 0.2) return 'bg-gray-200';
+    return 'bg-gray-100';
+  } else if (color === 'green') {
+    if (intensity > 0.8) return 'bg-green-500 text-white';
+    if (intensity > 0.6) return 'bg-green-400 text-white';
+    if (intensity > 0.4) return 'bg-green-300';
+    if (intensity > 0.2) return 'bg-green-200';
+    return 'bg-green-100';
+  }
+  return 'bg-gray-100 text-gray-800';
 };
 
 const balanceDifferenceClass = (currentBalance: number) => {
