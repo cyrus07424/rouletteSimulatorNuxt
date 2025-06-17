@@ -10,29 +10,29 @@
           
           <div class="flex gap-3 items-center">
             <!-- Simulation Speed Slider -->
-            <div class="flex items-center gap-2" v-if="config.value && config.value.simulationSpeed">
+            <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 whitespace-nowrap">Speed:</span>
               <input
-                  v-model.number="config.value.simulationSpeed"
+                  v-model.number="simulationSpeed"
                   type="range"
-                  min="10"
-                  max="2000"
+                  min="0"
+                  max="1000"
                   step="10"
                   class="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
-              <span class="text-sm text-gray-600 min-w-0">{{ config.value.simulationSpeed }}ms</span>
+              <span class="text-sm text-gray-600 min-w-0">{{ simulationSpeed }}ms</span>
             </div>
             
             <UButton
                 @click="toggleSimulation"
-                :color="isRunning ? 'orange' : 'green'"
+                :color="isRunning ? 'warning' : 'success'"
             >
               {{ isRunning ? 'Pause' : 'Resume' }}
             </UButton>
             
             <UButton
                 @click="endSimulation"
-                color="red"
+                color="error"
                 variant="outline"
             >
               End
@@ -48,7 +48,7 @@
           </div>
           
           <div class="bg-purple-50 p-3 rounded-lg">
-            <div class="text-lg font-bold text-purple-600">{{ config.value?.simulationSpeed || 100 }}ms</div>
+            <div class="text-lg font-bold text-purple-600">{{ simulationSpeed }}ms</div>
             <div class="text-sm text-purple-500">Round Speed</div>
           </div>
           
@@ -94,7 +94,7 @@
               
               <div class="bg-green-50 p-3 rounded">
                 <div class="text-lg font-bold" :class="balanceDifferenceClass(strategyResult.stats.currentBalance)">
-                  {{ formatCurrency(strategyResult.stats.currentBalance - (config.value?.initialBalance || 1000)) }}
+                  {{ formatCurrency(strategyResult.stats.currentBalance - (config?.initialBalance || 1000)) }}
                 </div>
                 <div class="text-xs text-gray-500">Difference</div>
               </div>
@@ -219,6 +219,23 @@ const isRunning = ref(true);
 const totalRounds = ref(0);
 const simulationTimer = ref<NodeJS.Timeout | null>(null);
 const chartRefs = ref<Record<string, HTMLCanvasElement>>({});
+
+// シミュレーションスピードをローカルrefで管理
+const simulationSpeed = ref(config.value.simulationSpeed);
+
+// configのsimulationSpeedが変わったらローカルにも反映
+watch(() => config.value.simulationSpeed, (val) => {
+  simulationSpeed.value = val;
+});
+// ローカルのsimulationSpeedが変わったらsetConfigで反映
+const { setConfig } = useSimulationConfig();
+watch(simulationSpeed, (val) => {
+  setConfig({
+    ...config.value,
+    simulationSpeed: val,
+    selectedStrategies: Array.from(config.value.selectedStrategies),
+  });
+});
 
 // Simulation data
 const simulator = ref<RouletteSimulator>();
@@ -460,8 +477,8 @@ const getAveragePayout = (stats: StrategyStats) => {
   return stats.betCount > 0 ? stats.wholeTotalPayoutValue / stats.betCount : 0;
 };
 
-const setChartRef = (strategyName: string, el: HTMLCanvasElement | null) => {
-  if (el) {
+const setChartRef = (strategyName: string, el: Element | ComponentPublicInstance | null) => {
+  if (el instanceof HTMLCanvasElement) {
     chartRefs.value[strategyName] = el;
   }
 };
