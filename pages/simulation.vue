@@ -391,7 +391,7 @@ const endSimulation = () => {
     clearTimeout(simulationTimer.value);
     simulationTimer.value = null;
   }
-  navigateTo('/setup');
+  navigateTo('/');
 };
 
 // Helper functions
@@ -489,8 +489,8 @@ onUnmounted(() => {
   }
 });
 
-// Redirect to setup if no configuration
+// Redirect to index if no configuration
 if (!config.value || !config.value.selectedStrategies.length) {
-  navigateTo('/setup');
+  navigateTo('/');
 }
 </script>
