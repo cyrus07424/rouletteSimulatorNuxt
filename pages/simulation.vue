@@ -200,7 +200,7 @@ import {RouletteSimulator} from '~/composables/rouletteSimulator';
 import {MartingaleStrategy} from '~/composables/strategies/martingaleStrategy';
 import {FixedBetStrategy} from '~/composables/strategies/fixedBetStrategy';
 import {CocomoStrategy} from '~/composables/strategies/cocomoStrategy';
-import {SpotHelper} from '~/utils/spotHelper';
+import {ONE_TO_36_WHEEL, EUROPEAN_WHEEL, AMERICAN_WHEEL, SpotHelper} from '~/utils/spotHelper';
 import {drawBalanceChart} from '~/utils/chartHelper';
 import type {SimulationConfig} from '~/composables/useSimulationConfig';
 
@@ -281,30 +281,13 @@ const colorPercentages = computed(() => {
 });
 
 const availableSpots = computed(() => {
-  const spots: Spot[] = [];
-  
-  // Add numbers 1-36
-  for (let i = 1; i <= 36; i++) {
-    spots.push(i as Spot);
+  if (config.value.rouletteType === RouletteType.EUROPEAN_STYLE) {
+    return EUROPEAN_WHEEL;
+  } else if (config.value.rouletteType === RouletteType.AMERICAN_STYLE) {
+    return AMERICAN_WHEEL;
+  } else {
+    return ONE_TO_36_WHEEL;
   }
-  
-  // Add 0 for European or American roulette
-  if (config.value.rouletteType === RouletteType.EUROPEAN_STYLE || config.value.rouletteType === RouletteType.AMERICAN_STYLE) {
-    spots.push(0 as Spot);
-  }
-  
-  // Add 00 for American roulette
-  if (config.value.rouletteType === RouletteType.AMERICAN_STYLE) {
-    spots.push(-1 as Spot);
-  }
-  
-  return spots.sort((a, b) => {
-    if (a === 0) return -1;
-    if (b === 0) return 1;
-    if (a === -1) return -1;
-    if (b === -1) return 1;
-    return a - b;
-  });
 });
 
 // Initialize simulation

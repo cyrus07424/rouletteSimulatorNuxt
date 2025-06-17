@@ -2,14 +2,14 @@ import type {RouletteContext} from '~/types';
 import {RouletteType, Spot, SpotGenerateType} from '~/types';
 
 // Wheel layouts based on the original Java implementation
-const ONE_TO_36_WHEEL: Spot[] = [
+export const ONE_TO_36_WHEEL: Spot[] = [
     Spot.SPOT_01, Spot.SPOT_02, Spot.SPOT_03, Spot.SPOT_04, Spot.SPOT_05, Spot.SPOT_06, Spot.SPOT_07, Spot.SPOT_08, Spot.SPOT_09,
     Spot.SPOT_10, Spot.SPOT_11, Spot.SPOT_12, Spot.SPOT_13, Spot.SPOT_14, Spot.SPOT_15, Spot.SPOT_16, Spot.SPOT_17, Spot.SPOT_18,
     Spot.SPOT_19, Spot.SPOT_20, Spot.SPOT_21, Spot.SPOT_22, Spot.SPOT_23, Spot.SPOT_24, Spot.SPOT_25, Spot.SPOT_26, Spot.SPOT_27,
     Spot.SPOT_28, Spot.SPOT_29, Spot.SPOT_30, Spot.SPOT_31, Spot.SPOT_32, Spot.SPOT_33, Spot.SPOT_34, Spot.SPOT_35, Spot.SPOT_36,
 ];
 
-const EUROPEAN_WHEEL: Spot[] = [
+export const EUROPEAN_WHEEL: Spot[] = [
     Spot.SPOT_0, Spot.SPOT_32, Spot.SPOT_15, Spot.SPOT_19, Spot.SPOT_04, Spot.SPOT_21, Spot.SPOT_02, Spot.SPOT_25,
     Spot.SPOT_17, Spot.SPOT_34, Spot.SPOT_06, Spot.SPOT_27, Spot.SPOT_13, Spot.SPOT_36, Spot.SPOT_11, Spot.SPOT_30, Spot.SPOT_08,
     Spot.SPOT_23, Spot.SPOT_10, Spot.SPOT_05, Spot.SPOT_24, Spot.SPOT_16, Spot.SPOT_33, Spot.SPOT_01, Spot.SPOT_20, Spot.SPOT_14,
@@ -17,7 +17,7 @@ const EUROPEAN_WHEEL: Spot[] = [
     Spot.SPOT_03, Spot.SPOT_26,
 ];
 
-const AMERICAN_WHEEL: Spot[] = [
+export const AMERICAN_WHEEL: Spot[] = [
     Spot.SPOT_0, Spot.SPOT_28, Spot.SPOT_09, Spot.SPOT_26, Spot.SPOT_30, Spot.SPOT_11, Spot.SPOT_07, Spot.SPOT_20, Spot.SPOT_32, Spot.SPOT_17,
     Spot.SPOT_05, Spot.SPOT_22, Spot.SPOT_34, Spot.SPOT_15, Spot.SPOT_03, Spot.SPOT_24, Spot.SPOT_36, Spot.SPOT_13, Spot.SPOT_01, Spot.SPOT_00,
     Spot.SPOT_27, Spot.SPOT_10, Spot.SPOT_25, Spot.SPOT_29, Spot.SPOT_12, Spot.SPOT_08, Spot.SPOT_19, Spot.SPOT_31, Spot.SPOT_18, Spot.SPOT_06,
