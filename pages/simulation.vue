@@ -187,6 +187,9 @@
         </div>
       </div>
     </div>
+    <footer class="text-center text-gray-400 mt-8">
+      &copy; 2025 <a href="https://github.com/cyrus07424" target="_blank">cyrus</a>
+    </footer>
   </div>
 </template>
 

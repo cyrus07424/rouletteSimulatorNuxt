@@ -41,14 +41,14 @@
               <input
                   v-model.number="config.simulationSpeed"
                   type="range"
-                  min="10"
-                  max="5000"
+                  min="0"
+                  max="1000"
                   step="10"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div class="flex justify-between text-xs text-gray-500 mt-1">
-                <span>Fast (10ms)</span>
-                <span>Slow (5000ms)</span>
+                <span>Fast (0ms)</span>
+                <span>Slow (1000ms)</span>
               </div>
               <p class="text-xs text-gray-500 mt-1">Time between rounds (lower = faster)</p>
             </div>
