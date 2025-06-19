@@ -511,4 +511,9 @@ onUnmounted(() => {
 if (!config.value || !config.value.selectedStrategies.length) {
   navigateTo('/');
 }
+
+// Setup page meta
+useHead({
+  title: 'Roulette Strategy Simulator - Roulette Simulation'
+})
 </script>

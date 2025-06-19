@@ -180,4 +180,9 @@ const startSimulation = () => {
   });
   navigateTo('/simulation');
 };
+
+// Setup page meta
+useHead({
+  title: 'Roulette Strategy Simulator'
+})
 </script>
